@@ -1,6 +1,6 @@
 function create_save_latest_prices_trigger() 
 {
-  const trigger_name = "save_latest_prices";
+  const trigger_name = save_latest_prices_trigger;
 
   delete_trigger(trigger_name);
 
@@ -12,10 +12,10 @@ function create_save_latest_prices_trigger()
 
 function save_latest_prices()
 {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Transactions_prices");
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(transactions_prices_sheet_name);
 
-  const source_range = sheet.getRange("E2:E" + sheet.getLastRow());
-  const target_range = sheet.getRange("F2:F" + sheet.getLastRow());
+  const source_range = sheet.getRange(`E${transactions_prices_start_row}:E` + sheet.getLastRow());
+  const target_range = sheet.getRange(`F${transactions_prices_start_row}:F` + sheet.getLastRow());
 
   const prices = source_range.getValues();
 

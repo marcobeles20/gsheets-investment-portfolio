@@ -1,6 +1,6 @@
 function create_log_net_worth_trigger() 
 {
-  const trigger_name = "log_net_worth";
+  const trigger_name = log_net_worth_trigger;
 
   delete_trigger(trigger_name);
 
@@ -10,23 +10,10 @@ function create_log_net_worth_trigger()
     .create();
 }
 
-function delete_trigger(trigger_name)
-{
-  const triggers = ScriptApp.getProjectTriggers();
-
-  for(const index in triggers)
-  {
-    if(triggers[index].getHandlerFunction() != trigger_name)
-      continue;
-
-    ScriptApp.deleteTrigger(triggers[index]);
-  }
-}
-
 function log_net_worth()
 {
-  const source_sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Net Worth");
-  const target_sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Net Worth_log");
+  const source_sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(net_worth_sheet_name);
+  const target_sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(net_worth_log_sheet_name);
 
   const date = new Date;
   const timezone = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
