@@ -12,73 +12,76 @@ function create_log_net_worth_trigger()
 
 function log_net_worth()
 {
-  const source_sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(net_worth_sheet_name);
-  const target_sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(net_worth_log_sheet_name);
+  const net_worth_sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(net_worth_sheet_name);
+  const net_worth_log_sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(net_worth_log_sheet_name);
 
-  const date = new Date;
   const timezone = SpreadsheetApp.getActive().getSpreadsheetTimeZone();
+  const date = Utilities.formatDate(new Date, timezone, "MMM d, yyyy");
 
-  const source_date = Utilities.formatDate(date, timezone, "MMM d, yyyy");
-  const source_owner = source_sheet.getRange("E2").getValue();
+  const owner = net_worth_sheet.getRange(net_worth_owner_cell).getValue();
+  const cash = net_worth_sheet.getRange(net_worth_cash_cell).getValue();
+  const debt_payable = net_worth_sheet.getRange(net_worth_debt_payable_cell).getValue();
+  const debt_receivable = net_worth_sheet.getRange(net_wroth_debt_receivable_cell).getValue();
+  const equity = net_worth_sheet.getRange(net_worth_equity_cell).getValue();
+  const fixed_income = net_worth_sheet.getRange(net_worth_fixed_income_cell).getValue();
+  const net_worth = net_worth_sheet.getRange(net_worth_net_worth_cell).getValue();
 
-  const source_cash = source_sheet.getRange("M1").getValue();
-  const source_receivable = source_sheet.getRange("M2").getValue();
-  const source_equity = source_sheet.getRange("M3").getValue();
-  const source_fixed_income = source_sheet.getRange("M4").getValue();
-  const source_debt = source_sheet.getRange("E8").getValue();
-  const source_net_worth = source_sheet.getRange("E21").getValue();
+  if(typeof(net_worth) != "number")
+    return;
 
-  let entry = [
-    [date, source_owner, source_cash, source_receivable, source_equity, source_fixed_income, source_debt, source_net_worth]
+  let new_entry = [
+    [date, owner, cash, debt_receivable, equity, fixed_income, debt_payable, net_worth]
   ];
 
-  for(var row = 2; ; row++)
+  for(var row = net_worth_log_start_row; ; row++)
   {
-    const target_date = Utilities.formatDate(new Date(target_sheet.getRange("A" + row).getValue()), timezone, "MMM d, yyyy");
-    const target_owner = target_sheet.getRange("B" + row).getValue();
+    const log_date_cell = net_worth_log_sheet.getRange(
+      row,
+      net_worth_log_columns['date']
+    );
+    const log_owner_cell = net_worth_log_sheet.getRange(
+      row,
+      net_worth_log_columns['owner']
+    );
 
-    if(!target_sheet.getRange("A" + row).isBlank())
+    const log_date = Utilities.formatDate(new Date(log_date_cell.getValue()), timezone, "MMM d, yyyy");
+    const log_owner = log_owner_cell.getValue();
+  
+    if(!log_date_cell.isBlank())
     {
-      if(target_date != source_date) // If target date is not today
+      if(log_date != date) // If log date is not today
         continue;
 
-      if(target_owner != source_owner && !target_sheet.getRange("B" + row).isBlank()) // If target_owner is not source_owner and is not blank
-        continue;
-
-      if(typeof(source_net_worth) != "number")
-        return;
+      if(log_owner != owner && !log_owner_cell.isBlank()) // If log_owner is not owner and is not blank
+        continue; // Otherwise, replace the log entry if log_owner is owner
       
-      target_sheet.getRange("A" + row + ":H" + row).setValues(entry);
+      net_worth_log_sheet.getRange(
+        row,
+        1,
+        1,
+        net_worth_log_sheet.getLastColumn()
+      ).setValues(new_entry);
       break;
     }
     else
     {
-      if(typeof(source_net_worth) != "number")
+      var new_log_entry_range = net_worth_log_sheet.getRange(
+        row,
+        1,
+        1,
+        net_worth_log_sheet.getLastColumn()
+      );
+
+      if(row > net_worth_log_sheet.getMaxRows())
       {
-        source_cash = row > 2 ? target_sheet.getRange("C" + (row - 1)).getValue() : 0;
-        source_receivable = row > 2 ? target_sheet.getRange("D" + (row - 1)).getValue() : 0;
-        source_equity = row > 2 ? target_sheet.getRange("E" + (row - 1)).getValue() : 0;
-        source_fixed_income = row > 2 ? target_sheet.getRange("F" + (row - 1)).getValue() : 0;
-        source_debt = row > 2 ? target_sheet.getRange("G" + (row - 1)).getValue() : 0;
-        source_net_worth = row > 2 ? target_sheet.getRange("H" + (row - 1)).getValue() : 0;
+        net_worth_log_sheet.insertRowAfter(row - 1);
 
-        entry = [
-          [date, source_owner, source_cash, source_receivable, source_equity, source_fixed_income, source_debt, source_net_worth]
-        ];
-      }
-
-      var target_range = target_sheet.getRange("A" + row + ":H" + row);
-
-      if(row > target_sheet.getMaxRows())
-      {
-        target_sheet.insertRowAfter(row - 1);
-
-        target_range.setBorder(
+        new_log_entry_range.setBorder(
           true, true, true, true, true, true, "white", SpreadsheetApp.BorderStyle.SOLID
         );
       }
 
-      target_range.setValues(entry);
+      new_log_entry_range.setValues(new_entry);
       break;
     }
   }
