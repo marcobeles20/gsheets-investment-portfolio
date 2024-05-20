@@ -12,23 +12,34 @@ function create_save_latest_prices_trigger()
 
 function save_latest_prices()
 {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(transactions_prices_sheet_name);
+  const transactions_prices_sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(transactions_prices_sheet_name);
 
-  const source_range = sheet.getRange(`E${transactions_prices_start_row}:E` + sheet.getLastRow());
-  const target_range = sheet.getRange(`F${transactions_prices_start_row}:F` + sheet.getLastRow());
+  const price_formula_values = transactions_prices_sheet.getRange(
+    transactions_prices_start_row,
+    transactions_prices_columns['price_formula'],
+    transactions_prices_sheet.getLastRow() - transactions_prices_start_row + 1
+  ).getValues();
 
-  const prices = source_range.getValues();
-
-  for(const index in prices)
+  for(const index in price_formula_values)
   {
-    const price = prices[index][0];
-    const row = Number(index) + 2;
+    const price_formula = price_formula_values[index][0];
+    const row = Number(index) + transactions_prices_start_row;
 
-    if(typeof(price) == "number")
+    // If Price Formula value is a number, do not perform changes
+    if(typeof(price_formula) == "number")
       continue;
 
-    prices[index][0] = sheet.getRange("F" + row).getValue();
+    // If Price Formula value is not a number, replace with Latest Price value
+    price_formula_values[index][0] = transactions_prices_sheet.getRange(
+      row,
+      transactions_prices_columns['latest_price']
+    ).getValue();
   }
 
-  target_range.setValues(prices);
+  // Save updated values to Latest Price column
+  transactions_prices_sheet.getRange(
+    transactions_prices_start_row,
+    transactions_prices_columns['latest_price'],
+    transactions_prices_sheet.getLastRow() - transactions_prices_start_row + 1
+  ).setValues(price_formula_values);
 }
