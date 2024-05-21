@@ -10,7 +10,7 @@ const net_worth_net_worth_cell = "E21";
 
 const net_worth_log_sheet_name = "Net Worth_log";
 const net_worth_log_start_iteration_row = 1000;
-const net_worth_log_start_row = net_worth_log_start_iteration_row; // Set to 2 for normal, slower runtime
+const net_worth_log_start_row = net_worth_log_start_iteration_row; // Set to 2 for default operation but slower runtime
 
 const net_worth_log_columns = {
   'date':               1,
