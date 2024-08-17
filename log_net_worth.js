@@ -23,14 +23,15 @@ function log_net_worth()
   const debt_payable = net_worth_sheet.getRange(net_worth_debt_payable_cell).getValue();
   const debt_receivable = net_worth_sheet.getRange(net_wroth_debt_receivable_cell).getValue();
   const equity = net_worth_sheet.getRange(net_worth_equity_cell).getValue();
-  const fixed_income = net_worth_sheet.getRange(net_worth_fixed_income_cell).getValue();
+  const fixed = net_worth_sheet.getRange(net_worth_fixed_cell).getValue();
+  const deposit = net_worth_sheet.getRange(net_worth_deposit_cell).getValue();
   const net_worth = net_worth_sheet.getRange(net_worth_net_worth_cell).getValue();
 
   if(typeof(net_worth) != "number")
     return;
 
   let new_entry = [
-    [date, owner, cash, debt_receivable, equity, fixed_income, debt_payable, net_worth]
+    [date, owner, cash, debt_receivable, equity, fixed, deposit, debt_payable, net_worth]
   ];
 
   for(var row = net_worth_log_start_row; ; row++)

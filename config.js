@@ -5,7 +5,8 @@ const net_worth_cash_cell = "M1";
 const net_worth_debt_payable_cell = "E8";
 const net_wroth_debt_receivable_cell = "M2";
 const net_worth_equity_cell = "M3";
-const net_worth_fixed_income_cell = "M4";
+const net_worth_fixed_cell = "M4";
+const net_worth_deposit_cell = "M5";
 const net_worth_net_worth_cell = "E21";
 
 const net_worth_log_sheet_name = "Net Worth_log";
@@ -18,9 +19,10 @@ const net_worth_log_columns = {
   'cash':               3,
   'debt_receivable':    4,
   'equity':             5,
-  'fixed_income':       6,
-  'debt_payable':       7,
-  'net_worth':          8
+  'fixed':              6,
+  'deposit':            7,
+  'debt_payable':       8,
+  'net_worth':          9
 };
 
 const transactions_prices_sheet_name = "Transactions_prices";
