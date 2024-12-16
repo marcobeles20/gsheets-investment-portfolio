@@ -9,7 +9,7 @@ on:
       - '.github/workflows/push_script.yaml'
 
 jobs:
-  deploy:
+  push:
     runs-on: ubuntu-latest
 
     steps:
