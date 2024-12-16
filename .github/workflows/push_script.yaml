@@ -1,0 +1,29 @@
+name: 'Push Script'
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'script/**'
+      - '.github/workflows/push_script.yaml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout'
+        uses: 'actions/checkout@v2'
+
+      - name: 'Clasp Push'
+        uses: 'daikikatsuragawa/clasp-action@v1.1.0'
+        with:
+          accessToken: '${{ secrets.CLASP_ACCESS_TOKEN }}'
+          idToken: '${{ secrets.CLASP_ID_TOKEN }}'
+          refreshToken: '${{ secrets.CLASP_REFRESH_TOKEN }}'
+          clientId: '${{ secrets.CLASP_CLIENT_ID }}'
+          clientSecret: '${{ secrets.CLASP_CLIENT_SECRET }}'
+          scriptId: '${{ secrets.GAS_SCRIPT_ID }}'
+          rootDir: 'script'
+          command: 'push'
